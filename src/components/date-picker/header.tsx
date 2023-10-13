@@ -31,18 +31,18 @@ function MonthSelectButton({
 }) {
   const handleClick = () => {
     if (type === "next") {
-      setMonth((prev) => moment(prev).clone().add(1, "month"));
+      setMonth((prev) => prev.clone().add(1, "month"));
     } else {
-      setMonth((prev) => moment(prev).clone().subtract(1, "month"));
+      setMonth((prev) => prev.clone().subtract(1, "month"));
     }
   };
 
   const Icon = type === "next" ? <ChevronRight /> : <ChevronLeft />;
-  const disabled = false;
+  const disabled = true;
 
   return (
     <button
-      className="grid h-full w-[44px] cursor-pointer place-items-center hover:bg-btn-hover hover:text-btn-hover disabled:cursor-not-allowed disabled:bg-btn-disabled disabled:text-btn-disabled"
+      className="grid h-full w-[44px] place-items-center hover:bg-btn-hover hover:text-btn-hover disabled:cursor-not-allowed disabled:bg-btn-disabled disabled:text-btn-disabled"
       onClick={handleClick}
       disabled={disabled}
     >

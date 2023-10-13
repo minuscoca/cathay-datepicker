@@ -23,3 +23,7 @@
     --btn-foreground-disabled: 117 117 117;
   }
 }
+
+button {
+  cursor: pointer;
+}

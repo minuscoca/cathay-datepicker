@@ -3,6 +3,7 @@
 import { useState } from "react";
 import moment from "moment";
 import { Header } from "./header";
+import { DateGrid } from "./dates";
 
 export function DatePicker() {
   const initMonth = moment(moment().format("YYYY-MM"));
@@ -15,6 +16,7 @@ export function DatePicker() {
   return (
     <div className="h-[240px] w-[350px] text-base">
       <Header month={month} setMonth={setMonth} />
+      <DateGrid month={month} />
     </div>
   );
 }
