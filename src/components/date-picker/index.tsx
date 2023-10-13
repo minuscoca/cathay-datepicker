@@ -23,11 +23,10 @@ export function DatePicker() {
     endDate: selectedRange.endDate?.format(),
   });
 
-  // TODO: Fix fontSize to 16px?
   // TODO: redux to stop prop drilling?
 
   return (
-    <div className="h-[240px] w-[350px] text-base">
+    <div className="h-[240px] w-[350px]">
       <Header month={month} setMonth={setMonth} />
       <DateGrid
         month={month}

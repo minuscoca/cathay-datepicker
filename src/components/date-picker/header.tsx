@@ -2,8 +2,6 @@ import { type Dispatch, type SetStateAction } from "react";
 import moment from "moment";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// TODO: variable 44px?
-
 export function Header({
   month,
   setMonth,
