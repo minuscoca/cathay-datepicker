@@ -2,26 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
+    --color-primary: 255 115 179;
+    --color-secondary: 111 114 185;
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    --btn-background-default: 255 255 255;
+    --btn-foreground-default: 0 0 0;
+
+    --btn-background-hover: 230 230 230;
+    --btn-foreground-hover: 0 0 0;
+
+    --btn-background-today: 255 255 118;
+    --btn-foreground-today: 0 0 0;
+
+    --btn-background-active: 0 110 220;
+    --btn-foreground-active: 255 255 255;
+
+    --btn-background-disabled: 255 255 255;
+    --btn-foreground-disabled: 117 117 117;
+  }
 }
