@@ -61,29 +61,29 @@ export function DateColumn({
   const isActive = isSelected(date, selectedRange);
 
   const handleClick = () => {
-    if (startDate === undefined) {
-      setSelectedRange((prev) => ({ ...prev, startDate: date }));
+    // 1. First click date to set it as start date value.
+    if (!startDate && !endDate) {
+      setSelectedRange({ startDate: date, endDate: undefined });
       return;
     }
 
-    if (endDate === undefined) {
-      setSelectedRange((prev) => ({ ...prev, endDate: date }));
+    // 2. Next click date is same as current select option or later than current option will set it as end date value.
+    if (!endDate) {
+      // if selected date as end date value is earlier than start date value, reverse start date value and end date value.
+      if (date.isBefore(startDate)) {
+        setSelectedRange((prev) => ({
+          startDate: date,
+          endDate: prev.startDate,
+        }));
+      } else {
+        setSelectedRange((prev) => ({ ...prev, endDate: date }));
+      }
       return;
     }
-
-    if (
-      isInRange(date, selectedRange) || // date is between startDate and endDate
-      date.isAfter(endDate) // date is after endDate
-    ) {
-      // should update endDate to date
-      setSelectedRange((prev) => ({ ...prev, endDate: date }));
-    }
-
-    if (date.isBefore(startDate)) {
-      // date is before startDate
-      // should update startDate to date
-      setSelectedRange((prev) => ({ ...prev, startDate: undefined }));
-    }
+    // 3. Next click date is earlier than current option will reset start date value.
+    // ! if only reset the start date value as requested will cause bizarre user experiance.
+    // ! normally, datepicker will set start date value by the selected date and also reset the end date value to undefind.
+    setSelectedRange({ startDate: date, endDate: undefined });
   };
 
   return (
@@ -118,7 +118,6 @@ function isSelected(date: moment.Moment, selectedRange: SelectedRange) {
   const { startDate, endDate } = selectedRange;
   if (startDate && endDate) return isInRange(date, selectedRange);
   if (startDate) return isSameDay(date, startDate);
-  if (endDate) return isSameDay(date, endDate);
   return false;
 }
 
