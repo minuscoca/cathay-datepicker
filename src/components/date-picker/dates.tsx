@@ -1,13 +1,15 @@
 import { cn } from "@/libs/utils";
 import moment from "moment";
 import { useMemo, type Dispatch, type SetStateAction } from "react";
-import { type SelectedRange } from ".";
+import { type DatePickerType, type SelectedRange } from ".";
 
 export function DateGrid({
+  type,
   month,
   selectedRange,
   setSelectedRange,
 }: {
+  type: DatePickerType;
   month: moment.Moment;
   selectedRange: SelectedRange;
   setSelectedRange: Dispatch<SetStateAction<SelectedRange>>;
@@ -36,6 +38,7 @@ export function DateGrid({
       {dates.map((date) => (
         <DateColumn
           key={date.format()}
+          type={type}
           date={date}
           selectedRange={selectedRange}
           setSelectedRange={setSelectedRange}
@@ -46,10 +49,12 @@ export function DateGrid({
 }
 
 export function DateColumn({
+  type,
   date,
   selectedRange,
   setSelectedRange,
 }: {
+  type: DatePickerType;
   date: moment.Moment;
   selectedRange: SelectedRange;
   setSelectedRange: Dispatch<SetStateAction<SelectedRange>>;
@@ -59,6 +64,7 @@ export function DateColumn({
   const isToday = date.isSame(today, "day");
   const isCurrentMonth = date.isSame(today, "month");
   const isActive = isSelected(date, selectedRange);
+  const isDisabled = type === "current" && !isCurrentMonth;
 
   const handleClick = () => {
     // 1. First click date to set it as start date value.
@@ -91,13 +97,13 @@ export function DateColumn({
       className={cn(
         "h-[36px] w-[50px] hover:bg-btn-hover hover:text-btn-hover disabled:bg-btn-disabled disabled:text-btn-disabled",
         {
+          "bg-btn-disabled text-btn-disabled": !isCurrentMonth,
+          "cursor-not-allowed": isDisabled,
           "bg-btn-active text-btn-active": isActive,
           "bg-btn-today text-btn-today": isToday,
-          "cursor-not-allowed bg-btn-disabled text-btn-disabled":
-            !isCurrentMonth,
         },
       )}
-      disabled={!isCurrentMonth}
+      disabled={isDisabled}
       onClick={handleClick}
     >
       {date.format("D日")}

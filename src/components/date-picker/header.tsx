@@ -1,11 +1,14 @@
 import { type Dispatch, type SetStateAction } from "react";
 import moment from "moment";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { type DatePickerType } from ".";
 
 export function Header({
+  type,
   month,
   setMonth,
 }: {
+  type: DatePickerType;
   month: moment.Moment;
   setMonth: Dispatch<SetStateAction<moment.Moment>>;
 }) {
@@ -13,9 +16,17 @@ export function Header({
 
   return (
     <div className="mb-[16px] flex h-[44px] w-full items-center justify-center">
-      <MonthSelectButton type="prev" setMonth={setMonth} />
+      <MonthSelectButton
+        type="prev"
+        setMonth={setMonth}
+        disabled={type !== "cross"}
+      />
       <p className="flex-1 text-center">{formatedMonth}</p>
-      <MonthSelectButton type="next" setMonth={setMonth} />
+      <MonthSelectButton
+        type="next"
+        setMonth={setMonth}
+        disabled={type !== "cross"}
+      />
     </div>
   );
 }
@@ -23,9 +34,11 @@ export function Header({
 function MonthSelectButton({
   type,
   setMonth,
+  disabled,
 }: {
   type: "next" | "prev";
   setMonth: Dispatch<SetStateAction<moment.Moment>>;
+  disabled: boolean;
 }) {
   const handleClick = () => {
     if (type === "next") {
@@ -36,7 +49,6 @@ function MonthSelectButton({
   };
 
   const Icon = type === "next" ? <ChevronRight /> : <ChevronLeft />;
-  const disabled = true;
 
   return (
     <button
