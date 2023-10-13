@@ -118,6 +118,7 @@ function isSelected(date: moment.Moment, selectedRange: SelectedRange) {
   const { startDate, endDate } = selectedRange;
   if (startDate && endDate) return isInRange(date, selectedRange);
   if (startDate) return isSameDay(date, startDate);
+  if (endDate) return isSameDay(date, endDate);
   return false;
 }
 
