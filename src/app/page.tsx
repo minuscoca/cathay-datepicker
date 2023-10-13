@@ -11,7 +11,7 @@ export default function Home() {
           </h2>
         </div>
 
-        <DatePicker type="current" />
+        <DatePicker />
       </section>
     </main>
   );

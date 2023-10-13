@@ -1,21 +1,24 @@
+"use client";
+
 import { cn } from "@/libs/utils";
 import moment from "moment";
-import { useMemo, type Dispatch, type SetStateAction } from "react";
-import { type DatePickerType, type SelectedRange } from ".";
+import { useMemo } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectCurrentMonth,
+  selectSelectedRange,
+  type SelectedRange,
+  setRangeStart,
+  setRange,
+  setRangeEnd,
+  selectType,
+} from "@/redux/slices/date-picker-slice";
 
-export function DateGrid({
-  type,
-  month,
-  selectedRange,
-  setSelectedRange,
-}: {
-  type: DatePickerType;
-  month: moment.Moment;
-  selectedRange: SelectedRange;
-  setSelectedRange: Dispatch<SetStateAction<SelectedRange>>;
-}) {
+export function DateGrid() {
+  const currentMonth = useAppSelector(selectCurrentMonth);
+
   const dates = useMemo(() => {
-    const currentMonthDates = getDates(month);
+    const currentMonthDates = getDates(currentMonth);
     const firstDayInWeeks = currentMonthDates[0].weekday();
     const lastDayInWeeks =
       currentMonthDates[currentMonthDates.length - 1].weekday();
@@ -24,72 +27,60 @@ export function DateGrid({
     const prefixDates =
       prefixDays === 0
         ? []
-        : getDates(month.clone().subtract(1, "month")).splice(-prefixDays);
+        : getDates(moment(currentMonth).subtract(1, "month").format()).splice(
+            -prefixDays,
+          );
     const postfixDates =
       postfixDays === 0
         ? []
-        : getDates(month.clone().add(1, "month")).splice(0, postfixDays - 1);
+        : getDates(moment(currentMonth).add(1, "month").format()).splice(
+            0,
+            postfixDays - 1,
+          );
     const result = [...prefixDates, ...currentMonthDates, ...postfixDates];
     return result;
-  }, [month]);
+  }, [currentMonth]);
 
   return (
     <div className="grid w-full grid-cols-7">
       {dates.map((date) => (
-        <DateColumn
-          key={date.format()}
-          type={type}
-          date={date}
-          selectedRange={selectedRange}
-          setSelectedRange={setSelectedRange}
-        />
+        <DateColumn key={date.format()} date={date} />
       ))}
     </div>
   );
 }
 
-export function DateColumn({
-  type,
-  date,
-  selectedRange,
-  setSelectedRange,
-}: {
-  type: DatePickerType;
-  date: moment.Moment;
-  selectedRange: SelectedRange;
-  setSelectedRange: Dispatch<SetStateAction<SelectedRange>>;
-}) {
-  const { startDate, endDate } = selectedRange;
+export function DateColumn({ date }: { date: moment.Moment }) {
+  const dispatch = useAppDispatch();
+  const datePickerType = useAppSelector(selectType);
+  const selectedRange = useAppSelector(selectSelectedRange);
   const today = moment().startOf("day");
   const isToday = date.isSame(today, "day");
   const isCurrentMonth = date.isSame(today, "month");
   const isActive = isSelected(date, selectedRange);
-  const isDisabled = type === "current" && !isCurrentMonth;
+  const isDisabled = datePickerType === "current" && !isCurrentMonth;
 
   const handleClick = () => {
     // 1. First click date to set it as start date value.
-    if (!startDate && !endDate) {
-      setSelectedRange({ startDate: date, endDate: undefined });
+    if (!selectedRange.start && !selectedRange.end) {
+      dispatch(setRangeStart(date.format()));
       return;
     }
 
     // 2. Next click date is same as current select option or later than current option will set it as end date value.
-    if (!endDate) {
+    if (selectedRange.start && !selectedRange.end) {
       // if selected date as end date value is earlier than start date value, reverse start date value and end date value.
-      if (date.isBefore(startDate)) {
-        setSelectedRange((prev) => ({
-          startDate: date,
-          endDate: prev.startDate,
-        }));
+      if (date.isBefore(selectedRange.start)) {
+        dispatch(setRange({ start: date.format(), end: selectedRange.start }));
       } else {
-        setSelectedRange((prev) => ({ ...prev, endDate: date }));
+        dispatch(setRangeEnd(date.format()));
       }
       return;
     }
     // 3. Next click date is earlier than current option will reset start date value.
     // ! if only reset the start date value as requested will cause bizarre user experiance.
     // ! normally, datepicker will set start date value by the selected date and also reset the end date value to undefind.
-    setSelectedRange({ startDate: date, endDate: undefined });
+    dispatch(setRange({ start: date.format(), end: undefined }));
   };
 
   return (
@@ -111,23 +102,19 @@ export function DateColumn({
   );
 }
 
-function isSameDay(a: moment.Moment, b: moment.Moment) {
-  return a.isSame(b, "day");
-}
-
 function isInRange(date: moment.Moment, selectedRange: SelectedRange) {
-  const { startDate, endDate } = selectedRange;
-  return date.isBetween(startDate, endDate, "date", "[]"); // '[]' indicates inclusion of a value
+  return date.isBetween(selectedRange.start, selectedRange.end, "date", "[]"); // '[]' indicates inclusion of a value
 }
 
 function isSelected(date: moment.Moment, selectedRange: SelectedRange) {
-  const { startDate, endDate } = selectedRange;
-  if (startDate && endDate) return isInRange(date, selectedRange);
-  if (startDate) return isSameDay(date, startDate);
+  if (selectedRange.start && selectedRange.end)
+    return isInRange(date, selectedRange);
+  if (selectedRange.start) return date.isSame(selectedRange.start, "day");
   return false;
 }
 
-function getDates(month: moment.Moment) {
+function getDates(date: string) {
+  const month = moment(date);
   const daysInMonth = month.daysInMonth();
   const dates = [];
   for (let i = 0; i < daysInMonth; i++) {
