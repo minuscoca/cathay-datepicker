@@ -37,6 +37,7 @@ function MonthSelectButton({ type }: { type: "next" | "prev" }) {
 
   return (
     <button
+      data-testid={`month-select-btn-${type}`}
       className="grid h-full w-[44px] place-items-center hover:bg-btn-hover hover:text-btn-hover disabled:cursor-not-allowed disabled:bg-btn-disabled disabled:text-btn-disabled"
       onClick={handleClick}
       disabled={datePickerType !== "cross"}
