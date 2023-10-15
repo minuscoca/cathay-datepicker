@@ -3,6 +3,7 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   DatePickerType,
+  resetRange,
   selectType,
   setType,
 } from "@/redux/slices/date-picker-slice";
@@ -13,13 +14,13 @@ export function SectionHeader() {
   const data =
     datePickerType === "current"
       ? ({
-          title: "Task – 1",
-          subtitle: "(Date Range Component for current month)",
-        } as const)
+        title: "Task – 1",
+        subtitle: "(Date Range Component for current month)",
+      } as const)
       : ({
-          title: "Task – 2",
-          subtitle: "(Date Range Component for cross months)",
-        } as const);
+        title: "Task – 2",
+        subtitle: "(Date Range Component for cross months)",
+      } as const);
 
   return (
     <div>
@@ -30,6 +31,7 @@ export function SectionHeader() {
         onChange={(e) => {
           const type = e.target.value as DatePickerType;
           dispatch(setType(type));
+          dispatch(resetRange())
         }}
       >
         <option id="task-option-task-1" value="current">
