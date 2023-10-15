@@ -29,10 +29,14 @@ describe("DatePicker initial render", () => {
     // Task - 1 - D
     expect(prevButton).toBeInTheDocument();
     expect(prevButton).toBeDisabled();
-    expect(prevButton).toHaveClass("disabled:cursor-not-allowed disabled:bg-btn-disabled disabled:text-btn-disabled");
+    expect(prevButton).toHaveClass(
+      "disabled:cursor-not-allowed disabled:bg-btn-disabled disabled:text-btn-disabled",
+    );
     expect(nextButton).toBeInTheDocument();
     expect(nextButton).toBeDisabled();
-    expect(nextButton).toHaveClass("disabled:cursor-not-allowed disabled:bg-btn-disabled disabled:text-btn-disabled");
+    expect(nextButton).toHaveClass(
+      "disabled:cursor-not-allowed disabled:bg-btn-disabled disabled:text-btn-disabled",
+    );
   });
 
   test("render day buttons", () => {

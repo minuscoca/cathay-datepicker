@@ -1,9 +1,14 @@
 "use client";
 
-import { useAppSelector } from "@/redux/hooks";
-import { selectType } from "@/redux/slices/date-picker-slice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  DatePickerType,
+  selectType,
+  setType,
+} from "@/redux/slices/date-picker-slice";
 
 export function SectionHeader() {
+  const dispatch = useAppDispatch();
   const datePickerType = useAppSelector(selectType);
   const data =
     datePickerType === "current"
@@ -18,6 +23,22 @@ export function SectionHeader() {
 
   return (
     <div>
+      <select
+        id="task-select"
+        data-testid="task-select"
+        name="task-select"
+        onChange={(e) => {
+          const type = e.target.value as DatePickerType;
+          dispatch(setType(type));
+        }}
+      >
+        <option id="task-option-task-1" value="current">
+          Task 1
+        </option>
+        <option id="task-option-task-2" value="cross">
+          Task 2
+        </option>
+      </select>
       <h1 className="text-center text-xl">{data.title}</h1>
       <h2 className="text-center">{data.subtitle}</h2>
     </div>
