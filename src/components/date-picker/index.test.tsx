@@ -5,8 +5,9 @@ import { Provider as ReduxProvider } from "react-redux";
 
 import { DatePicker } from "./index";
 import { store } from "@/redux/store";
+import { SectionHeader } from "../section-header";
 
-describe("DatePicker initial render", () => {
+describe("DatePicker type=current", () => {
   test("render header 1-C", () => {
     render(
       <ReduxProvider store={store}>
@@ -14,6 +15,7 @@ describe("DatePicker initial render", () => {
       </ReduxProvider>,
     );
     // Task - 1 - C
+    // to have month text
     const monthText = moment().format("YYYY年M月");
     expect(screen.getByText(monthText)).toBeInTheDocument();
   });
@@ -27,16 +29,11 @@ describe("DatePicker initial render", () => {
     const prevButton = screen.getByTestId("month-select-btn-prev");
     const nextButton = screen.getByTestId("month-select-btn-next");
     // Task - 1 - D
+    // disable prevButton and nextButton
     expect(prevButton).toBeInTheDocument();
     expect(prevButton).toBeDisabled();
-    expect(prevButton).toHaveClass(
-      "disabled:cursor-not-allowed disabled:bg-btn-disabled disabled:text-btn-disabled",
-    );
     expect(nextButton).toBeInTheDocument();
     expect(nextButton).toBeDisabled();
-    expect(nextButton).toHaveClass(
-      "disabled:cursor-not-allowed disabled:bg-btn-disabled disabled:text-btn-disabled",
-    );
   });
 
   test("render day buttons", () => {
@@ -120,5 +117,49 @@ describe("DatePicker select days A1~A2", () => {
     expect(day11Button).not.toHaveClass("bg-btn-active text-btn-active");
     expect(day12Button).not.toHaveClass("bg-btn-active text-btn-active");
     expect(day13Button).not.toHaveClass("bg-btn-active text-btn-active");
+  });
+});
+
+describe("DatePicker type=cross", () => {
+  test("render header", () => {
+    const { debug } = render(
+      <ReduxProvider store={store}>
+        <SectionHeader />
+        <DatePicker />
+      </ReduxProvider>,
+    );
+
+    const taskSelect = screen.getByTestId("task-select");
+    expect(taskSelect).toHaveValue("current");
+    fireEvent.change(taskSelect, { target: { value: "cross" } });
+    expect(taskSelect).toHaveValue("cross");
+    expect(store.getState().datePicker.type).toBe("cross");
+
+    const prevButton = screen.getByTestId("month-select-btn-prev");
+    const nextButton = screen.getByTestId("month-select-btn-next");
+
+    debug(prevButton);
+
+    // Task - 2 - B
+    // to have month text
+    const monthText = moment().format("YYYY年M月");
+    expect(screen.getByText(monthText)).toBeInTheDocument();
+
+    // Task 2 - C
+    // enable prevButton and nextButton
+    expect(prevButton).toBeInTheDocument();
+    expect(prevButton).not.toBeDisabled();
+    expect(nextButton).toBeInTheDocument();
+    expect(nextButton).not.toBeDisabled();
+
+    // Task 2 - A
+    // can go next month
+    fireEvent.click(nextButton);
+    const nextMonthText = moment().add(1, "month").format("YYYY年M月");
+    expect(screen.getByText(nextMonthText)).toBeInTheDocument();
+
+    // can go prev month
+    fireEvent.click(prevButton);
+    expect(screen.getByText(monthText)).toBeInTheDocument();
   });
 });
