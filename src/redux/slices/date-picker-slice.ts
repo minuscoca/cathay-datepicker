@@ -60,6 +60,9 @@ export const datePickerSlice = createSlice({
     resetRange: (state) => {
       state.selectedRange = initialRange;
     },
+    resetMonth: (state) => {
+      state.currentMonth = moment().startOf("month").format();
+    },
   },
 });
 
@@ -71,6 +74,7 @@ export const {
   setRange,
   setRangeEnd,
   resetRange,
+  resetMonth,
 } = datePickerSlice.actions;
 export const selectType = (state: RootState) => state.datePicker.type;
 export const selectCurrentMonth = (state: RootState) =>

@@ -6,6 +6,7 @@ import {
   resetRange,
   selectType,
   setType,
+  resetMonth,
 } from "@/redux/slices/date-picker-slice";
 
 export function SectionHeader() {
@@ -31,7 +32,8 @@ export function SectionHeader() {
         onChange={(e) => {
           const type = e.target.value as DatePickerType;
           dispatch(setType(type));
-          dispatch(resetRange())
+          dispatch(resetRange());
+          dispatch(resetMonth());
         }}
       >
         <option id="task-option-task-1" value="current">
