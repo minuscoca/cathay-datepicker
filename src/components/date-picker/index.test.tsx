@@ -7,8 +7,8 @@ import { DatePicker } from "./index";
 import { store } from "@/redux/store";
 import { SectionHeader } from "../section-header";
 
-describe("DatePicker type=current", () => {
-  test("render header 1-C", () => {
+describe("[DatePicker] type=current render", () => {
+  test("should render header", () => {
     render(
       <ReduxProvider store={store}>
         <DatePicker />
@@ -20,7 +20,7 @@ describe("DatePicker type=current", () => {
     expect(screen.getByText(monthText)).toBeInTheDocument();
   });
 
-  test("render month-select 1-D", () => {
+  test("should render month-select buttons", () => {
     render(
       <ReduxProvider store={store}>
         <DatePicker />
@@ -36,7 +36,7 @@ describe("DatePicker type=current", () => {
     expect(nextButton).toBeDisabled();
   });
 
-  test("render day buttons", () => {
+  test("should render day buttons", () => {
     render(
       <ReduxProvider store={store}>
         <DatePicker />
@@ -49,9 +49,15 @@ describe("DatePicker type=current", () => {
     const nextMonthDays = lastDay === 0 ? 6 : 7 - lastDay;
     const dayButtons = screen.getAllByRole("button", { name: /\d日/ });
     expect(dayButtons).toHaveLength(days + prevMonthDays + nextMonthDays);
+
+    // Task - 1 - B
+    // show not-allowed icon when hovering on “non-current month” day.
+    // disable day click.
     expect(
       dayButtons.filter((button) => button.getAttribute("disabled") != null),
     ).toHaveLength(prevMonthDays + nextMonthDays);
+
+    // highlight today
     const todayText = moment().format("D日");
     const todayButton = screen.getByText(todayText);
     expect(todayButton).toBeInTheDocument();
@@ -59,8 +65,8 @@ describe("DatePicker type=current", () => {
   });
 });
 
-describe("DatePicker select days A1~A2", () => {
-  test("select days", () => {
+describe("[DatePicker] select days render", () => {
+  test("can select days", () => {
     render(
       <ReduxProvider store={store}>
         <DatePicker />
@@ -120,8 +126,8 @@ describe("DatePicker select days A1~A2", () => {
   });
 });
 
-describe("DatePicker type=cross", () => {
-  test("render header", () => {
+describe("[DatePicker] type=cross", () => {
+  test("should render header", () => {
     const { debug } = render(
       <ReduxProvider store={store}>
         <SectionHeader />

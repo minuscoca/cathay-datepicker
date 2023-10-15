@@ -5,7 +5,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { store } from "@/redux/store";
 import { SectionHeader } from "../section-header";
 
-describe("SectionHeader render", () => {
+describe("[SectionHeader] render", () => {
   test("can select task", () => {
     render(
       <ReduxProvider store={store}>
